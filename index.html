@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>IP Info</title>
+       <link rel="stylesheet" href="/ipinfo.css">
+       <script type="text/javascript">
+            document.addEventListener("DOMContentLoaded", function() {
+                var v4status = document.getElementById('ipv4-status');
+                var v6status = document.getElementById('ipv6-status');
+
+                if (v4status) {
+                    fetch('https://v4.dnsn.eu', {method: 'GET', headers: { 'X-Output': 'iponly' }}).then((resp) => resp.text()).then(function(response) {
+                        document.getElementById('ipv4-status').innerHTML = '<span style="color: green;">' + response + '</span>';
+                    }).catch(function(error) {
+                        document.getElementById('ipv4-status').innerHTML = '<span style="color: red;">Not Available</span>';
+                    });
+                }
+
+                if (v6status) {
+                    fetch('https://v6.dnsn.eu', {method: 'GET', headers: { 'X-Output': 'iponly' }}).then((resp) => resp.text()).then(function(response) {
+                        document.getElementById('ipv6-status').innerHTML = '<span style="color: green;">' + response + '</span>';
+                    }).catch(function(error) {
+                        document.getElementById('ipv6-status').innerHTML = '<span style="color: red;">Not Available</span>';
+                    });
+                }
+            });
+            
+       </script>
+    </head>
+    <body>
+        <div id="wrapper">
+            <form id="paper" method="get" action="">
+                <div id="text">
+                    <ul id="ulx">
+                        {{ range $val := .Attributes}}
+                        <li><span class="key">{{ $val.Key }}</span><span class="value" {{ if ne $val.ValueId "" }}id="{{ $val.ValueId }}" {{ end }}>{{ $val.Value }}</span></li>
+                        {{ end }}
+                        {{ if ne .IPW4 "" }}
+                        <li><span class="key">IPW4</span><span class="value" style="font-size: small;"><a href="https://{{ .IPW4 }}">{{ .IPW4 }}</a></span></li>
+                        {{ end }}
+                    </ul>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>
